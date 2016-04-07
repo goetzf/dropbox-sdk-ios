@@ -15,6 +15,7 @@
 
 
 static NSString *kDBProtocolDropbox = @"dbapi-2";
+static NSString *kDBProtocolDropboxEMM = @"dbapi-8-emm";
 
 /* A key to keep track of the nonce for the current link flow */
 static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
@@ -88,9 +89,12 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
 
     NSString *urlStr = nil;
 
-    NSURL *dbURL =
-    [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/connect", kDBProtocolDropbox, kDBDropboxAPIVersion]];
-    if ([[UIApplication sharedApplication] canOpenURL:dbURL]) {
+    NSURL *dbURL = [DBSession db_checkedURLForProtocol:kDBProtocolDropbox];
+    if (!dbURL) {
+        dbURL = [DBSession db_checkedURLForProtocol: kDBProtocolDropboxEMM];
+    }
+
+    if (dbURL) {
         urlStr = [NSString stringWithFormat:@"%@?k=%@&s=%@&state=%@%@",
 				  dbURL, consumerKey, secret, nonce, userIdStr];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlStr]];
@@ -111,6 +115,22 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
 
 - (void)linkFromController:(UIViewController *)rootController {
     [self linkUserId:nil fromController:rootController];
+}
+
++ (NSURL *)db_checkedURLForProtocol:(NSString *)protocol
+{
+    if (!protocol) {
+        return nil;
+    }
+
+    NSURL *url =
+    [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@/connect", protocol, kDBDropboxAPIVersion]];
+
+    if ([[UIApplication sharedApplication] canOpenURL:url]) {
+        return url;
+    }
+
+    return nil;
 }
 
 - (BOOL)handleOpenURL:(NSURL *)url {

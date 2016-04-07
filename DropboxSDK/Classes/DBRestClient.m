@@ -159,7 +159,9 @@
 }
 
 - (void)requestDidLoadMetadata:(DBRequest*)request
-{
+{ 
+    [[self retain] autorelease];
+
     if (request.statusCode == 304) {
         if ([delegate respondsToSelector:@selector(restClient:metadataUnchangedAtPath:)]) {
             NSString* path = [request.userInfo objectForKey:@"path"];
@@ -239,6 +241,8 @@
 }
 
 - (void)requestDidLoadDelta:(DBRequest *)request {
+    [[self retain] autorelease];
+
     if (request.error) {
         [self checkForAuthenticationFailure:request];
         if ([delegate respondsToSelector:@selector(restClient:loadDeltaFailedWithError:)]) {
@@ -358,8 +362,10 @@ contentType:(NSString*)contentType eTag:(NSString*)eTag {
 }
 
 - (void)requestDidLoadFile:(DBRequest*)request {
+    [[self retain] autorelease];
+
     NSString* path = [request.userInfo objectForKey:@"path"];
-    
+
     if (request.error) {
         [self checkForAuthenticationFailure:request];
         if ([delegate respondsToSelector:@selector(restClient:loadFileFailedWithError:)]) {
@@ -441,6 +447,8 @@ contentType:(NSString*)contentType eTag:(NSString*)eTag {
 
 - (void)requestDidLoadThumbnail:(DBRequest*)request
 {
+    [[self retain] autorelease];
+
     if (request.error) {
         [self checkForAuthenticationFailure:request];
         if ([delegate respondsToSelector:@selector(restClient:loadThumbnailFailedWithError:)]) {
@@ -598,6 +606,8 @@ params:(NSDictionary *)params
 
 
 - (void)requestDidUploadFile:(DBRequest*)request {
+    [[self retain] autorelease];
+
     NSDictionary *result = [request parseResponseAsType:[NSDictionary class]];
 
     if (!result) {
@@ -695,6 +705,8 @@ params:(NSDictionary *)params
 }
 
 - (void)requestDidUploadChunk:(DBRequest *)request {
+    [[self retain] autorelease];
+
 	NSDictionary *resp = [request parseResponseAsType:[NSDictionary class]];
 
 	if (!resp) {
@@ -712,7 +724,7 @@ params:(NSDictionary *)params
 		}
 	}
 
-	[requests removeObject:request];
+    [requests removeObject:request];
 }
 
 
@@ -749,6 +761,8 @@ params:(NSDictionary *)params
 }
 
 - (void)requestDidUploadFromUploadId:(DBRequest *)request {
+    [[self retain] autorelease];
+
 	NSDictionary *resp = [request parseResponseAsType:[NSDictionary class]];
 
 	if (!resp) {
@@ -793,6 +807,8 @@ params:(NSDictionary *)params
 }
 
 - (void)requestDidLoadRevisions:(DBRequest *)request {
+    [[self retain] autorelease];
+
     NSArray *resp = [request parseResponseAsType:[NSArray class]];
     
     if (!resp) {
@@ -812,6 +828,8 @@ params:(NSDictionary *)params
             [delegate restClient:self loadedRevisions:revisions forFile:path];
         }
     }
+
+    [requests removeObject:request];
 }
 
 - (void)restoreFile:(NSString *)path toRev:(NSString *)rev {
@@ -833,6 +851,8 @@ params:(NSDictionary *)params
 }
 
 - (void)requestDidRestoreFile:(DBRequest *)request {
+    [[self retain] autorelease];
+
     NSDictionary *dict = [request parseResponseAsType:[NSDictionary class]];
 
     if (!dict) {
@@ -845,6 +865,8 @@ params:(NSDictionary *)params
             [delegate restClient:self restoredFile:metadata];
         }
     }
+
+    [requests removeObject:request];
 }
 
 
@@ -871,6 +893,8 @@ params:(NSDictionary *)params
 
 
 - (void)requestDidMovePath:(DBRequest*)request {
+    [[self retain] autorelease];
+
     if (request.error) {
         [self checkForAuthenticationFailure:request];
         if ([delegate respondsToSelector:@selector(restClient:movePathFailedWithError:)]) {
@@ -913,6 +937,8 @@ params:(NSDictionary *)params
 
 
 - (void)requestDidCopyPath:(DBRequest*)request {
+    [[self retain] autorelease];
+
     if (request.error) {
         [self checkForAuthenticationFailure:request];
         if ([delegate respondsToSelector:@selector(restClient:copyPathFailedWithError:)]) {
@@ -948,6 +974,8 @@ params:(NSDictionary *)params
 }
 
 - (void)requestDidCreateCopyRef:(DBRequest *)request {
+    [[self retain] autorelease];
+
     NSDictionary *result = [request parseResponseAsType:[NSDictionary class]];
     if (!result) {
         [self checkForAuthenticationFailure:request];
@@ -989,6 +1017,8 @@ params:(NSDictionary *)params
 }
 
 - (void)requestDidCopyFromRef:(DBRequest *)request {
+    [[self retain] autorelease];
+
     NSDictionary *result = [request parseResponseAsType:[NSDictionary class]];
     if (!result) {
         [self checkForAuthenticationFailure:request];
@@ -1028,6 +1058,8 @@ params:(NSDictionary *)params
 
 
 - (void)requestDidDeletePath:(DBRequest*)request {
+    [[self retain] autorelease];
+
     if (request.error) {
         [self checkForAuthenticationFailure:request];
         if ([delegate respondsToSelector:@selector(restClient:deletePathFailedWithError:)]) {
@@ -1067,6 +1099,8 @@ params:(NSDictionary *)params
 
 
 - (void)requestDidCreateDirectory:(DBRequest*)request {
+    [[self retain] autorelease];
+
     if (request.error) {
         [self checkForAuthenticationFailure:request];
         if ([delegate respondsToSelector:@selector(restClient:createFolderFailedWithError:)]) {
@@ -1103,6 +1137,8 @@ params:(NSDictionary *)params
 
 - (void)requestDidLoadAccountInfo:(DBRequest*)request
 {
+    [[self retain] autorelease];
+
     if (request.error) {
         [self checkForAuthenticationFailure:request];
         if ([delegate respondsToSelector:@selector(restClient:loadAccountInfoFailedWithError:)]) {
@@ -1136,6 +1172,8 @@ params:(NSDictionary *)params
 
 
 - (void)requestDidSearchPath:(DBRequest*)request {
+    [[self retain] autorelease];
+
     if (request.error) {
         [self checkForAuthenticationFailure:request];
         if ([delegate respondsToSelector:@selector(restClient:searchFailedWithError:)]) {
@@ -1186,6 +1224,8 @@ params:(NSDictionary *)params
 }
 
 - (void)requestDidLoadSharableLink:(DBRequest*)request {
+    [[self retain] autorelease];
+
     if (request.error) {
         [self checkForAuthenticationFailure:request];
         if ([delegate respondsToSelector:@selector(restClient:loadSharableLinkFailedWithError:)]) {
@@ -1216,6 +1256,8 @@ params:(NSDictionary *)params
 }
 
 - (void)requestDidLoadStreamableURL:(DBRequest *)request {
+    [[self retain] autorelease];
+
     if (request.error) {
         [self checkForAuthenticationFailure:request];
         if ([delegate respondsToSelector:@selector(restClient:loadStreamableURLFailedWithError:)]) {
@@ -1229,6 +1271,7 @@ params:(NSDictionary *)params
             [delegate restClient:self loadedStreamableURL:url forFile:path];
         }
     }
+
     [requests removeObject:request];
 }
 

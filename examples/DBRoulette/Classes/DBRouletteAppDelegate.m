@@ -79,7 +79,7 @@
     }
     
     // Add the navigation controller's view to the window and display.
-    [window addSubview:navigationController.view];
+    window.rootViewController = navigationController;
     [window makeKeyAndVisible];
 	
 	NSURL *launchURL = [launchOptions objectForKey:UIApplicationLaunchOptionsURLKey];
