@@ -133,7 +133,7 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
     return nil;
 }
 
-- (BOOL)handleOpenURL:(NSURL *)url {
+- (BOOL)handleOpenURL:(NSURL *)url linkedUsedId:(NSString **)outUserId {
     NSString *expected = [NSString stringWithFormat:@"%@://%@/", [self appScheme], kDBDropboxAPIVersion];
     if (![[url absoluteString] hasPrefix:expected]) {
         return NO;
@@ -156,13 +156,26 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
 			DBLogError(@"unable to verify link request");
 			return NO;
 		}
-
+		
+		if (outUserId) {
+			*outUserId = userId;
+		}
+		
         [self updateAccessToken:token accessTokenSecret:secret forUserId:userId];
     } else if ([methodName isEqual:@"cancel"]) {
         DBLogInfo(@"DropboxSDK: user cancelled Dropbox link");
+		
+		if (outUserId) {
+			*outUserId = nil;
+		}
     }
 
     return YES;
+}
+
+- (BOOL)handleOpenURL:(NSURL *)url
+{
+	return [self handleOpenURL:url linkedUsedId:NULL];
 }
 
 @end
