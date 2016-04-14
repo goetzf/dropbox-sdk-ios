@@ -297,6 +297,13 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
     UIApplication *app = [UIApplication sharedApplication];
     id<UIApplicationDelegate> delegate = app.delegate;
 
+#ifdef __IPHONE_9_0
+	if ([delegate respondsToSelector: @selector(application:openURL:options:)]) {
+		[delegate application:app openURL:openUrl options:@[]];
+		return YES;
+	}
+#endif
+	
     if ([delegate respondsToSelector:@selector(application:openURL:sourceApplication:annotation:)]) {
         [delegate application:app openURL:openUrl sourceApplication:@"com.getdropbox.Dropbox" annotation:nil];
     } else if ([delegate respondsToSelector:@selector(application:handleOpenURL:)]) {
