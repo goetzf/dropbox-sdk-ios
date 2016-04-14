@@ -19,7 +19,7 @@
 - (void)linkFromController:(UIViewController *)rootController;
 - (void)linkUserId:(NSString *)userId fromController:(UIViewController *)rootController;
 
-- (BOOL)handleOpenURL:(NSURL *)url linkedUsedId:(NSString **)userId;
+- (BOOL)handleOpenURL:(NSURL *)url linkedUserId:(NSString **)userId;
 - (BOOL)handleOpenURL:(NSURL *)url;
 
 @end

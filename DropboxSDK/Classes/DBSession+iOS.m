@@ -133,7 +133,7 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
     return nil;
 }
 
-- (BOOL)handleOpenURL:(NSURL *)url linkedUsedId:(NSString **)outUserId {
+- (BOOL)handleOpenURL:(NSURL *)url linkedUserId:(NSString **)outUserId {
     NSString *expected = [NSString stringWithFormat:@"%@://%@/", [self appScheme], kDBDropboxAPIVersion];
     if (![[url absoluteString] hasPrefix:expected]) {
         return NO;
