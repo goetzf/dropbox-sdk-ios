@@ -61,6 +61,14 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
 @synthesize url;
 @synthesize webView;
 
+- (id)initWithUrl:(NSURL *)connectUrl fromController:(UIViewController *)pRootController {
+    return [self initWithUrl:connectUrl fromController:pRootController session:[DBSession sharedSession]];
+}
+
+- (id)initWithUrl:(NSURL *)connectUrl fromController:(UIViewController *)pRootController session:(DBSession *)pSession {
+    return [self initWithUrl:connectUrl fromController:pRootController session:pSession dismissalHandler:nil];
+}
+
 - (id)initWithUrl:(NSURL *)connectUrl fromController:(UIViewController *)pRootController dismissalHandler:(void (^)(BOOL, UIViewController *))dismissalHandler {
     return [self initWithUrl:connectUrl fromController:pRootController session:[DBSession sharedSession] dismissalHandler:dismissalHandler];
 }
@@ -242,7 +250,8 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
         DBConnectController *childController =
             [[[DBConnectController alloc] initWithUrlRequest:request
                                               fromController:self.rootController
-                                                     session:self.session] autorelease];
+                                                     session:self.session
+                                            dismissalHandler:nil] autorelease];
 
         NSDictionary *queryParams = [DBSession parseURLParams:[[request URL] query]];
         NSString *title = [queryParams objectForKey:@"embed_title"];
