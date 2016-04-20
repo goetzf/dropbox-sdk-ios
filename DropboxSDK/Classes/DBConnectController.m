@@ -329,7 +329,7 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
     }
 	
     if (self.dismissalHandler) {
-        self.dismissalHandler(success, self.navigationController);
+        self.dismissalHandler(success, self);
     }
     else {
         [self.navigationController dismissModalViewControllerAnimated:animated];

@@ -103,13 +103,14 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
                   kDBProtocolHTTPS, kDBDropboxWebHost, kDBDropboxAPIVersion,
                   consumerKey, secret, nonce, userIdStr];
         UIViewController *connectController = [[[DBConnectController alloc] initWithUrl:[NSURL URLWithString:urlStr] fromController:rootController session:self dismissalHandler:dismissalHandler] autorelease];
-        UINavigationController *navController = [[[UINavigationController alloc] initWithRootViewController:connectController] autorelease];
 
         if (presentationHandler) {
-			presentationHandler(navController);
+			presentationHandler(connectController);
         }
         
         else {
+            UINavigationController *navController = [[[UINavigationController alloc] initWithRootViewController:connectController] autorelease];
+
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                 connectController.modalPresentationStyle = UIModalPresentationFormSheet;
                 navController.modalPresentationStyle = UIModalPresentationFormSheet;
