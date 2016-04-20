@@ -23,12 +23,11 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
 
 - (void)loadRequest;
 - (BOOL)openUrl:(NSURL *)url;
-- (void)dismiss;
-- (void)dismissAnimated:(BOOL)animated;
 - (void)cancelAnimated:(BOOL)animated;
 
 @property (nonatomic, assign) UIViewController *rootController;
 @property (nonatomic, retain) DBSession *session;
+@property (nonatomic, copy) void(^dismissalHandler)(BOOL, UIViewController *);
 @property (nonatomic, retain) UIAlertView *alertView;
 @property (nonatomic, assign) BOOL hasLoaded;
 @property (nonatomic, retain) NSURL *url;
@@ -62,23 +61,20 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
 @synthesize url;
 @synthesize webView;
 
-- (id)initWithUrl:(NSURL *)connectUrl fromController:(UIViewController *)pRootController {
-    return [self initWithUrl:connectUrl fromController:pRootController session:[DBSession sharedSession]];
+- (id)initWithUrl:(NSURL *)connectUrl fromController:(UIViewController *)pRootController dismissalHandler:(void (^)(BOOL, UIViewController *))dismissalHandler {
+    return [self initWithUrl:connectUrl fromController:pRootController session:[DBSession sharedSession] dismissalHandler:dismissalHandler];
 }
 
-- (id)initWithUrl:(NSURL *)connectUrl fromController:(UIViewController *)pRootController session:(DBSession *)pSession {
-    return [self initWithUrlRequest:[DBConnectController requestForUrl:connectUrl]
-                     fromController:rootController
-                            session:pSession];
+- (id)initWithUrl:(NSURL *)connectUrl fromController:(UIViewController *)pRootController session:(DBSession *)pSession dismissalHandler:(void (^)(BOOL, UIViewController *))dismissalHandler {
+    return [self initWithUrlRequest:[DBConnectController requestForUrl:connectUrl] fromController:rootController session:pSession dismissalHandler:dismissalHandler];
 }
 
-- (id)initWithUrlRequest:(NSURLRequest *)connectReq
-          fromController:(UIViewController *)pRootController
-                 session:(DBSession *)pSession {
+- (id)initWithUrlRequest:(NSURLRequest *)connectReq fromController:(UIViewController *)pRootController session:(DBSession *)pSession dismissalHandler:(void (^)(BOOL, UIViewController *))dismissalHandler {
     if ((self = [super init])) {
         self.url = [connectReq URL];
         self.request = connectReq;
         self.rootController = pRootController;
+        self.dismissalHandler = dismissalHandler;
         self.session = pSession;
 
         self.title = @"Dropbox";
@@ -232,7 +228,7 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
 			DBLogError(@"DropboxSDK: credentials not saved. Make sure you call -[DBSession handleOpenUrl:] in your app delegate's application:openURL:sourceApplication:annotation: method");
 		}
 
-        [self dismiss];
+        [self dismissWithSuccess:success];
         return NO;
     } else if ([[[request URL] scheme] isEqual:@"itms-apps"]) {
 #if TARGET_IPHONE_SIMULATOR
@@ -317,7 +313,7 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
 }
 
 - (void)cancelAnimated:(BOOL)animated {
-    [self dismissAnimated:animated];
+    [self dismissWithSuccess:NO animated:animated];
 
     NSString *cancelUrl = [NSString stringWithFormat:@"%@://%@/cancel", [self.session appScheme], kDBDropboxAPIVersion];
     [self openUrl:[NSURL URLWithString:cancelUrl]];
@@ -327,15 +323,21 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
     [self cancelAnimated:YES];
 }
 
-- (void)dismissAnimated:(BOOL)animated {
+- (void)dismissWithSuccess:(BOOL)success animated:(BOOL)animated {
     if ([webView isLoading]) {
         [webView stopLoading];
     }
-    [self.navigationController dismissModalViewControllerAnimated:animated];
+	
+    if (self.dismissalHandler) {
+        self.dismissalHandler(success, self.navigationController);
+    }
+    else {
+        [self.navigationController dismissModalViewControllerAnimated:animated];
+    }
 }
 
-- (void)dismiss {
-    [self dismissAnimated:YES];
+- (void)dismissWithSuccess:(BOOL)success {
+	[self dismissWithSuccess:success animated:YES];
 }
 
 @end

@@ -10,7 +10,7 @@
 
 @interface DBConnectController : UIViewController
 
-- (id)initWithUrl:(NSURL *)connectUrl fromController:(UIViewController *)rootController;
-- (id)initWithUrl:(NSURL *)connectUrl fromController:(UIViewController *)rootController session:(DBSession *)session;
+- (id)initWithUrl:(NSURL *)connectUrl fromController:(UIViewController *)rootController dismissalHandler:(void(^)(BOOL, UIViewController *viewController))dismissalHandler;
+- (id)initWithUrl:(NSURL *)connectUrl fromController:(UIViewController *)rootController session:(DBSession *)session dismissalHandler:(void(^)(BOOL, UIViewController *viewController))dismissalHandler;
 
 @end

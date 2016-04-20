@@ -59,7 +59,7 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
     return NO;
 }
 
-- (void)linkUserId:(NSString *)userId fromController:(UIViewController *)rootController {
+- (void)linkUserId:(NSString *)userId fromController:(UIViewController *)rootController presentationHandler:(void(^)(UIViewController *viewController))presentationHandler dismissalHandler:(void(^)(BOOL, UIViewController *))dismissalHandler {
     if (![self appConformsToScheme]) {
         DBLogError(@"DropboxSDK: unable to link; app isn't registered for correct URL scheme (%@)", [self appScheme]);
         return;
@@ -102,19 +102,26 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
         urlStr = [NSString stringWithFormat:@"%@://%@/%@/connect_login?k=%@&s=%@&state=%@&easl=1%@",
                   kDBProtocolHTTPS, kDBDropboxWebHost, kDBDropboxAPIVersion,
                   consumerKey, secret, nonce, userIdStr];
-        UIViewController *connectController = [[[DBConnectController alloc] initWithUrl:[NSURL URLWithString:urlStr] fromController:rootController session:self] autorelease];
+        UIViewController *connectController = [[[DBConnectController alloc] initWithUrl:[NSURL URLWithString:urlStr] fromController:rootController session:self dismissalHandler:dismissalHandler] autorelease];
         UINavigationController *navController = [[[UINavigationController alloc] initWithRootViewController:connectController] autorelease];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            connectController.modalPresentationStyle = UIModalPresentationFormSheet;
-            navController.modalPresentationStyle = UIModalPresentationFormSheet;
-        }
 
-        [rootController presentModalViewController:navController animated:YES];
+        if (presentationHandler) {
+			presentationHandler(navController);
+        }
+        
+        else {
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                connectController.modalPresentationStyle = UIModalPresentationFormSheet;
+                navController.modalPresentationStyle = UIModalPresentationFormSheet;
+            }
+            
+            [rootController presentModalViewController:navController animated:YES];
+        }
     }
 }
 
-- (void)linkFromController:(UIViewController *)rootController {
-    [self linkUserId:nil fromController:rootController];
+- (void)linkFromController:(UIViewController *)rootController presentationHandler:(void(^)(UIViewController *viewController))presentationHandler dismissalHandler:(void(^)(BOOL, UIViewController *))dismissalHandler {
+    [self linkUserId:nil fromController:rootController presentationHandler:presentationHandler dismissalHandler:dismissalHandler];
 }
 
 + (NSURL *)db_checkedURLForProtocol:(NSString *)protocol
