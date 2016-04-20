@@ -304,14 +304,14 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
 
 #ifdef __IPHONE_9_0
 	if ([delegate respondsToSelector: @selector(application:openURL:options:)]) {
-		[delegate application:app openURL:openUrl options:@[]];
-		return YES;
+		[delegate application:app openURL:openUrl options:@{}];
 	}
-#endif
-	
+#else
     if ([delegate respondsToSelector:@selector(application:openURL:sourceApplication:annotation:)]) {
         [delegate application:app openURL:openUrl sourceApplication:@"com.getdropbox.Dropbox" annotation:nil];
-    } else if ([delegate respondsToSelector:@selector(application:handleOpenURL:)]) {
+    }
+#endif
+	else if ([delegate respondsToSelector:@selector(application:handleOpenURL:)]) {
         [delegate application:app handleOpenURL:openUrl];
     } else {
 		DBLogError(@"DropboxSDK: app delegate does not implement application:openURL:sourceApplication:annotation:");
