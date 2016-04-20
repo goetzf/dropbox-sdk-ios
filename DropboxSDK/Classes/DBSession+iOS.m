@@ -124,6 +124,14 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
     [self linkUserId:nil fromController:rootController presentationHandler:presentationHandler dismissalHandler:dismissalHandler];
 }
 
+- (void)linkFromController:(UIViewController *)rootController {
+	[self linkFromController:rootController presentationHandler:nil dismissalHandler:nil];
+}
+
+- (void)linkUserId:(NSString *)userId fromController:(UIViewController *)rootController {
+	[self linkUserId:userId fromController:rootController presentationHandler:nil dismissalHandler:nil];
+}
+
 + (NSURL *)db_checkedURLForProtocol:(NSString *)protocol
 {
     if (!protocol) {

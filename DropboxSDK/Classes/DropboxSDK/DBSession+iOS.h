@@ -16,6 +16,9 @@
 
 - (NSString *)appScheme;
 
+- (void)linkFromController:(UIViewController *)rootController;
+- (void)linkUserId:(NSString *)userId fromController:(UIViewController *)rootController;
+
 - (void)linkFromController:(UIViewController *)rootController presentationHandler:(void(^)(UIViewController *viewController))presentationHandler dismissalHandler:(void(^)(BOOL success, UIViewController *viewController))dismissalHandler;
 - (void)linkUserId:(NSString *)userId fromController:(UIViewController *)rootController presentationHandler:(void(^)(UIViewController *viewController))presentationHandler dismissalHandler:(void(^)(BOOL success, UIViewController *viewController))dismissalHandler;
 
