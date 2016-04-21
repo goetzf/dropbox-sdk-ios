@@ -6,6 +6,7 @@
 //  Copyright 2008 matrixPointer. All rights reserved.
 //
 
+#import "MPOAuthAPI.h"
 #import "MPOAuthAPIRequestLoader.h"
 #import "MPOAuthURLRequest.h"
 #import "MPOAuthURLResponse.h"
