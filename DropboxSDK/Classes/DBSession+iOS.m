@@ -191,7 +191,7 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
 
 - (BOOL)handleOpenURL:(NSURL *)url
 {
-	return [self handleOpenURL:url linkedUsedId:NULL];
+    return [self handleOpenURL:url linkedUserId:NULL];
 }
 
 @end
