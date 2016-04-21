@@ -115,8 +115,8 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
                 connectController.modalPresentationStyle = UIModalPresentationFormSheet;
                 navController.modalPresentationStyle = UIModalPresentationFormSheet;
             }
-            
-            [rootController presentModalViewController:navController animated:YES];
+
+            [rootController presentViewController:navController animated:YES completion:nil];
         }
     }
 }

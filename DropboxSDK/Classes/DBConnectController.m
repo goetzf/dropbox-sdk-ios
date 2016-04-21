@@ -341,7 +341,7 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
         self.dismissalHandler(success, self);
     }
     else {
-        [self.navigationController dismissModalViewControllerAnimated:animated];
+        [self.navigationController dismissViewControllerAnimated:animated completion:nil];
     }
 }
 
