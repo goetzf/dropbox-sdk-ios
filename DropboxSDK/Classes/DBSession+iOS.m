@@ -97,11 +97,7 @@ static NSString *kDBLinkNonce = @"dropbox.sync.nonce";
     if (dbURL) {
         urlStr = [NSString stringWithFormat:@"%@?k=%@&s=%@&state=%@%@",
 				  dbURL, consumerKey, secret, nonce, userIdStr];
-        BOOL result = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlStr]];
-		
-		// Opening URL was cancelled by the user
-		if (!result && dismissalHandler)
-			dismissalHandler(NO, nil);
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlStr]];
     } else {
         urlStr = [NSString stringWithFormat:@"%@://%@/%@/connect_login?k=%@&s=%@&state=%@&easl=1%@",
                   kDBProtocolHTTPS, kDBDropboxWebHost, kDBDropboxAPIVersion,
