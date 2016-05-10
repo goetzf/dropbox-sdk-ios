@@ -222,20 +222,24 @@
 
 
 - (void)loadDelta:(NSString *)cursor {
-    NSDictionary *params = nil;
-    if (cursor) {
-        params = [NSDictionary dictionaryWithObject:cursor forKey:@"cursor"];
-    }
+	[self loadDeltaForPath:nil cursor:cursor];
+}
 
-    NSString *fullPath = [NSString stringWithFormat:@"/delta"];
-    NSMutableURLRequest* urlRequest =
-        [self requestWithHost:kDBDropboxAPIHost path:fullPath parameters:params method:@"POST"];
-
-    DBRequest* request =
-        [[[DBRequest alloc]
-          initWithURLRequest:urlRequest andInformTarget:self selector:@selector(requestDidLoadDelta:)]
-         autorelease];
-
+- (void)loadDeltaForPath:(NSString *)path cursor:(NSString *)cursor {
+	NSMutableDictionary *params = [NSMutableDictionary new];
+	if (cursor) {
+		[params setObject:cursor forKey:@"cursor"];
+	}
+	if (path) {
+		[params setObject:path forKey:@"path_prefix"];
+	}
+	if (!params.count) {
+		params = nil;
+	}
+	
+	NSMutableURLRequest* urlRequest = [self requestWithHost:kDBDropboxAPIHost path:@"/delta" parameters:params method:@"POST"];
+	DBRequest* request = [[[DBRequest alloc] initWithURLRequest:urlRequest andInformTarget:self selector:@selector(requestDidLoadDelta:)] autorelease];
+	
     request.userInfo = params;
     [requests addObject:request];
 }

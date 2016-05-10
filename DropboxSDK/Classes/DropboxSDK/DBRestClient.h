@@ -45,6 +45,7 @@
 /* Loads a list of files (represented as DBDeltaEntry objects) that have changed since the cursor was generated */
 - (void)loadDelta:(NSString *)cursor;
 
+- (void)loadDeltaForPath:(NSString *)path cursor:(NSString *)cursor;
 
 /* Loads the file contents at the given root/path and stores the result into destinationPath */
 - (void)loadFile:(NSString *)path intoPath:(NSString *)destinationPath;
