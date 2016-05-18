@@ -86,7 +86,7 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
         self.session = pSession;
 
         self.title = @"Dropbox";
-        self.navigationItem.leftBarButtonItem =
+        self.navigationItem.rightBarButtonItem =
             [[[UIBarButtonItem alloc]
               initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel)]
              autorelease];
