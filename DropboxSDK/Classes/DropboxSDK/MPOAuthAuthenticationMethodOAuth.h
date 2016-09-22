@@ -29,6 +29,8 @@ extern NSString * const MPOAuthNotificationRequestTokenRejected;
 @property (nonatomic, readwrite, retain) NSURL *oauthRequestTokenURL;
 @property (nonatomic, readwrite, retain) NSURL *oauthAuthorizeTokenURL;
 
+- (void)loader:(MPOAuthAPIRequestLoader *)inLoader didFailWithError:(NSError *)error;
+
 - (void)authenticate;
 
 @end

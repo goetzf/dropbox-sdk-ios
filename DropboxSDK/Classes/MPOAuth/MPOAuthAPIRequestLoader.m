@@ -8,6 +8,7 @@
 
 #import "MPOAuthAPI.h"
 #import "MPOAuthAPIRequestLoader.h"
+#import "MPOAuthAuthenticationMethodOAuth.h"
 #import "MPOAuthURLRequest.h"
 #import "MPOAuthURLResponse.h"
 #import "MPOAuthConnection.h"

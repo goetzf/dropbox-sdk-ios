@@ -290,7 +290,7 @@ extern id<DBNetworkRequestDelegate> dbNetworkRequestDelegate;
 
 + (NSURLRequest *)requestForUrl:(NSURL *)reqUrl {
     return [[[NSURLRequest alloc] initWithURL:reqUrl
-                                  cachePolicy:NSURLCacheStorageNotAllowed
+                                  cachePolicy:NSURLRequestReloadIgnoringCacheData
                               timeoutInterval:20] autorelease];
 }
 
