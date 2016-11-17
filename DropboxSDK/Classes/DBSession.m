@@ -8,7 +8,7 @@
 
 #import "DBSession.h"
 
-#import "DBKeychain.h"
+#import "DBCredentialKeychain.h"
 #import "DBLog.h"
 #import "MPOAuthCredentialConcreteStore.h"
 #import "MPOAuthSignatureParameter.h"
@@ -99,7 +99,7 @@ static int kDBCredentialsVersion = 3;
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
 
-        NSDictionary *savedCredentials = [DBKeychain credentials];
+        NSDictionary *savedCredentials = [DBCredentialKeychain credentials];
         if (savedCredentials != nil) {
             if ([key isEqualToString:[savedCredentials objectForKey:kMPOAuthCredentialConsumerKey]]) {
                 NSInteger version = [[savedCredentials objectForKey:kDBCredentialsVersionKey] intValue];
@@ -125,7 +125,7 @@ static int kDBCredentialsVersion = 3;
                     }
                 }
             } else {
-                [DBKeychain deleteCredentials];
+                [DBCredentialKeychain deleteCredentials];
             }
         }
         
@@ -173,7 +173,7 @@ static int kDBCredentialsVersion = 3;
 
 - (void)unlinkAll {
     [credentialStores removeAllObjects];
-    [DBKeychain deleteCredentials];
+    [DBCredentialKeychain deleteCredentials];
 }
 
 - (void)unlinkUserId:(NSString *)userId {
@@ -215,7 +215,7 @@ static int kDBCredentialsVersion = 3;
         [userCredentials release];
     }
     [credentials setObject:allUserCredentials forKey:kDBDropboxUserCredentials];
-    [DBKeychain setCredentials:credentials];
+    [DBCredentialKeychain setCredentials:credentials];
 }
 
 @end

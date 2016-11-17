@@ -1,12 +1,12 @@
 //
-//  DBKeychain-OSX.m
+//  DBCredentialKeychain-OSX.m
 //  DropboxSDK
 //
 //  Created by Brian Smith on 4/8/12.
 //  Copyright (c) 2012 Dropbox, Inc. All rights reserved.
 //
 
-#import "DBKeychain.h"
+#import "DBCredentialKeychain.h"
 
 #import "DBLog.h"
 
@@ -17,10 +17,10 @@ static char *kDBServiceName;
 static const char *kDBAccountName = "Dropbox";
 static SecKeychainItemRef s_itemRef;
 
-@implementation DBKeychain
+@implementation DBCredentialKeychain
 
 + (void)initialize {
-	if ([self class] != [DBKeychain class]) return;
+	if ([self class] != [DBCredentialKeychain class]) return;
 	NSString *keychainId = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
 	if (![keychainId length]) {
 		keychainId = [[NSBundle mainBundle] bundleIdentifier];
@@ -31,13 +31,13 @@ static SecKeychainItemRef s_itemRef;
 }
 
 + (SecKeychainItemRef)itemRef {
-	@synchronized ([DBKeychain class]) {
+	@synchronized ([DBCredentialKeychain class]) {
 		return s_itemRef;
 	}
 }
 
 + (void)setItemRef:(SecKeychainItemRef)itemRef {
-	@synchronized ([DBKeychain class]) {
+	@synchronized ([DBCredentialKeychain class]) {
 		if (itemRef == s_itemRef)
 			return;
 
@@ -68,7 +68,7 @@ static SecKeychainItemRef s_itemRef;
 	if (status == noErr) {
 		NSData *data = [NSData dataWithBytes:pData length:dataLen];
 		ret = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-		[DBKeychain setItemRef:itemRef];
+		[DBCredentialKeychain setItemRef:itemRef];
 	} else if (status != errSecItemNotFound) {
 		DBLogWarning(@"DropboxSDK: error reading stored credentials (%d)", status);
 	}
@@ -91,13 +91,13 @@ static SecKeychainItemRef s_itemRef;
 	[self credentials]; // Make sure itemRef is set if credentials hasn't been called yet
 
 	OSStatus status = noErr;
-	SecKeychainItemRef itemRef = [DBKeychain itemRef];
+	SecKeychainItemRef itemRef = [DBCredentialKeychain itemRef];
 	if (!itemRef) {
 		status = SecKeychainAddGenericPassword(NULL, (int32_t)strlen(kDBServiceName), kDBServiceName,
 											   (int32_t)strlen(kDBAccountName), kDBAccountName,
 											   (int32_t)[data length], [data bytes], &itemRef);
 		if (status == noErr) {
-			[DBKeychain setItemRef:itemRef];
+			[DBCredentialKeychain setItemRef:itemRef];
 		}
 		if (itemRef) {
 			CFRelease(itemRef);
@@ -113,12 +113,12 @@ static SecKeychainItemRef s_itemRef;
 
 + (void)deleteCredentials {
 	[self credentials]; // Make sure itemRef is set if credentials hasn't been called yet
-	SecKeychainItemRef itemRef = [DBKeychain itemRef];
+	SecKeychainItemRef itemRef = [DBCredentialKeychain itemRef];
 	if (!itemRef)
 		return;
 
 	OSStatus status = SecKeychainItemDelete(itemRef);
-	[DBKeychain setItemRef:nil];
+	[DBCredentialKeychain setItemRef:nil];
 
 	if (status == noErr) {
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey:kDBLinkedUserDefaultsKey];
